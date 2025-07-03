@@ -4,57 +4,73 @@ import pygame
 def play_game():
     pygame.init()
 
-    
     screen_width = 800
     screen_height = 800
-    square = min(screen_width, screen_height)
-    screen = pygame.display.set_mode((square, square))
-    
-    grid = 4
-    cell_size = (square / grid)
-
+    screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
+
+    # Game States
+    AWAITING_INPUT = "awaiting_input"
+    PROCESSING = "processing"
+    game_state = AWAITING_INPUT 
+    
+    processing_start = 0
+    PROCESSING_DELAY = 1300
+
+
+    grid = 4
+    cell_size = (screen_width / grid)
+
     running = True
 
     pygame.key.set_repeat(0)
 
     player_pos = [[2,2]]
 
-    
-    # Maybe this should not be FPS based at all
-    # I am thinking it may be better to implement it independent of frames
-    # and just have: Human input -> animations/resulting actions, then pause
-    # until the next human input.
     while running:
+
+        current_time = pygame.time.get_ticks()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                temp_pos = player_pos[0].copy()
-                temp_pos[1] -= 1
-                player_pos.insert(0, temp_pos)
-                player_pos.pop()
-                print("UP") 
-            if event.key == pygame.K_DOWN:
-                temp_pos = player_pos[0].copy()
-                temp_pos[1] += 1
-                player_pos.insert(0, temp_pos)
-                player_pos.pop()
-                print("DOWN")
-            if event.key == pygame.K_LEFT:
-                temp_pos = player_pos[0].copy()
-                temp_pos[0] -= 1
-                player_pos.insert(0, temp_pos)
-                player_pos.pop()
-                print("LEFT")
-            if event.key == pygame.K_RIGHT:
-                temp_pos = player_pos[0].copy()
-                temp_pos[0] += 1
-                player_pos.insert(0, temp_pos)
-                player_pos.pop()
-                print("RIGHT") 
+            if game_state == AWAITING_INPUT:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        temp_pos = player_pos[0].copy()
+                        temp_pos[1] -= 1 
+                        player_pos.insert(0, temp_pos)
+                        player_pos.pop()
+                        processing_start = current_time
+                        game_state = PROCESSING
+                    if event.key == pygame.K_DOWN:
+                        temp_pos = player_pos[0].copy()
+                        temp_pos[1] += 1
+                        player_pos.insert(0, temp_pos)
+                        player_pos.pop()
+                        processing_start = current_time
+                        game_state = PROCESSING
+                    if event.key == pygame.K_LEFT:
+                        temp_pos = player_pos[0].copy()
+                        temp_pos[0] -= 1
+                        player_pos.insert(0, temp_pos)
+                        player_pos.pop()
+                        processing_start = current_time
+                        game_state = PROCESSING
+                    if event.key == pygame.K_RIGHT:
+                        temp_pos = player_pos[0].copy()
+                        temp_pos[0] += 1
+                        player_pos.insert(0, temp_pos)
+                        player_pos.pop()
+                        processing_start = current_time
+                        game_state = PROCESSING
+                    
+
+        if game_state == PROCESSING:
+            print(processing_start, current_time, PROCESSING_DELAY)
+            if current_time - processing_start >= PROCESSING_DELAY :
+                game_state = AWAITING_INPUT
 
 
         for i in range(grid):
