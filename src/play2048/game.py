@@ -3,29 +3,33 @@ import pygame
 
 def play_game():
     pygame.init()
+    
+    clock = pygame.time.Clock() 
 
     screen_width = 800
     screen_height = 800
     screen = pygame.display.set_mode((screen_width, screen_height))
-    clock = pygame.time.Clock()
 
     # Game States
     AWAITING_INPUT = "awaiting_input"
     PROCESSING = "processing"
     game_state = AWAITING_INPUT 
-    
     processing_start = 0
     PROCESSING_DELAY = 1300
 
+    # Directions
+    UP = "up"
+    DOWN = "down"
+    LEFT = "left"
+    RIGHT = "right"
+    move = None
 
     grid = 4
     cell_size = (screen_width / grid)
 
     running = True
 
-    pygame.key.set_repeat(0)
-
-    player_pos = [[2,2]]
+    player_pos = [[2,2], [0,1]]
 
     while running:
 
@@ -35,41 +39,22 @@ def play_game():
             if event.type == pygame.QUIT:
                 running = False
 
-            if game_state == AWAITING_INPUT:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        temp_pos = player_pos[0].copy()
-                        temp_pos[1] -= 1 
-                        player_pos.insert(0, temp_pos)
-                        player_pos.pop()
-                        processing_start = current_time
-                        game_state = PROCESSING
-                    if event.key == pygame.K_DOWN:
-                        temp_pos = player_pos[0].copy()
-                        temp_pos[1] += 1
-                        player_pos.insert(0, temp_pos)
-                        player_pos.pop()
-                        processing_start = current_time
-                        game_state = PROCESSING
-                    if event.key == pygame.K_LEFT:
-                        temp_pos = player_pos[0].copy()
-                        temp_pos[0] -= 1
-                        player_pos.insert(0, temp_pos)
-                        player_pos.pop()
-                        processing_start = current_time
-                        game_state = PROCESSING
-                    if event.key == pygame.K_RIGHT:
-                        temp_pos = player_pos[0].copy()
-                        temp_pos[0] += 1
-                        player_pos.insert(0, temp_pos)
-                        player_pos.pop()
-                        processing_start = current_time
-                        game_state = PROCESSING
+            if (game_state == AWAITING_INPUT) and (event.type == pygame.KEYDOWN):
+                key_to_move = {
+                    pygame.K_UP: UP,
+                    pygame.K_DOWN: DOWN,
+                    pygame.K_LEFT: LEFT,
+                    pygame.K_RIGHT: RIGHT
+                }
+                if event.key in key_to_move:
+                    move = key_to_move[event.key]
+                    processing_start = current_time
+                    game_state = PROCESSING
                     
 
         if game_state == PROCESSING:
-            print(processing_start, current_time, PROCESSING_DELAY)
             if current_time - processing_start >= PROCESSING_DELAY :
+                move = None
                 game_state = AWAITING_INPUT
 
 
