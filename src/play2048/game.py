@@ -97,7 +97,7 @@ def play_game():
 
         if game_state == PROCESSING:
             if current_time - processing_start >= PROCESSING_DELAY :
-                move_tiles()
+                # move_tiles()
                 place_tiles(tiles)
                 print(tiles)
                 print()
