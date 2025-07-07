@@ -1,4 +1,5 @@
 import pygame
+import random
 
 
 def play_game():
@@ -15,7 +16,7 @@ def play_game():
     PROCESSING = "processing"
     game_state = AWAITING_INPUT 
     processing_start = 0
-    PROCESSING_DELAY = 1300
+    PROCESSING_DELAY = 300
 
     # Directions
     UP = "up"
@@ -34,8 +35,44 @@ def play_game():
     FONT_COLOR = (252, 86, 3)
     FONT = pygame.font.SysFont("comicsans", 60, bold=True)
 
-    # [x, y, value]
-    player_pos = [[2, 2, 2], [0, 0, 2], [1, 2, 2], [3, 3, 2], [3, 2, 2], [1, 1, 2]]
+    # "x,y": value
+    tiles = {
+        "11": [2],
+        "33": [2],
+    }
+
+    def place_tiles(tiles):
+        x = None
+        y = None
+        while True:
+            x = random.randint(0, 3)
+            y = random.randint(0, 3)
+            temp_tile = f"{x}{y}"
+            tile_num = len(tiles) 
+            if tile_num == 16:
+                break
+            elif temp_tile not in tiles:
+                tiles[temp_tile] = [2]
+                break
+        
+    def draw_tiles():
+        for tile in tiles:
+            coords_string = list(tile)
+            coords = []
+            for num in coords_string:
+                coords.append(int(num))
+
+            tile_x = (coords[0] * tile_size) + ((coords[0] + 1) * 10)
+            tile_y = (coords[1] * tile_size) + ((coords[1] + 1) * 10)
+            pygame.draw.rect(screen, "red", (tile_x, tile_y, tile_size, tile_size))
+            text = FONT.render(str(2), 1, FONT_COLOR)
+            screen.blit(
+                text,
+                (
+                    tile_x + (tile_size / 2 - text.get_width() / 2),
+                    tile_y + (tile_size / 2 - text.get_height() / 2),
+                ),
+            )
 
     while running:
 
@@ -61,11 +98,12 @@ def play_game():
         if game_state == PROCESSING:
             if current_time - processing_start >= PROCESSING_DELAY :
                 move_tiles()
+                place_tiles(tiles)
+                print(tiles)
+                print()
                 move = None
                 game_state = AWAITING_INPUT
 
-
-        
 
         for i in range(grid):
             temp_x = i * cell_size
@@ -97,31 +135,20 @@ def play_game():
         pygame.draw.rect(screen, "black", ((3 * (tile_size + 10)), 0, 10, screen_height))
         pygame.draw.rect(screen, "black", ((screen_width - 10), 0, 10, screen_height))
         
-        for x in player_pos:
-            player_x = (x[0] * tile_size) + ((x[0] + 1) * 10)
-            player_y = (x[1] * tile_size) + ((x[1] + 1) * 10)
-            pygame.draw.rect(screen, "red", (player_x, player_y, tile_size, tile_size))
-            text = FONT.render(str(2), 1, FONT_COLOR)
-            screen.blit(
-                text,
-                (
-                    player_x + (tile_size / 2 - text.get_width() / 2),
-                    player_y + (tile_size / 2 - text.get_height() / 2),
-                ),
-            )
+        draw_tiles()
 
 
-        # Move
-        def move_tiles():
-            for x in player_pos:
-                if move == UP:
-                    x[1] -= 1
-                if move == DOWN:
-                    x[1] += 1
-                if move == LEFT:
-                    x[0] -= 1
-                if move == RIGHT:
-                    x[0] += 1
+        # Move now defunct due to new tile storage type
+        # def move_tiles():
+        #     for x in player_pos:
+        #         if move == UP:
+        #             x[1] -= 1
+        #         if move == DOWN:
+        #             x[1] += 1
+        #         if move == LEFT:
+        #             x[0] -= 1
+        #         if move == RIGHT:
+        #             x[0] += 1
 
 
         pygame.display.flip()
