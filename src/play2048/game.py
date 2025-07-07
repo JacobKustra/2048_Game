@@ -30,7 +30,12 @@ def play_game():
 
     running = True
 
-    player_pos = [[2,2], [0, 0], [1, 2], [3,3], [3, 2], [1, 1]]
+
+    FONT_COLOR = (252, 86, 3)
+    FONT = pygame.font.SysFont("comicsans", 60, bold=True)
+
+    # [x, y, value]
+    player_pos = [[2, 2, 2], [0, 0, 2], [1, 2, 2], [3, 3, 2], [3, 2, 2], [1, 1, 2]]
 
     while running:
 
@@ -55,6 +60,7 @@ def play_game():
 
         if game_state == PROCESSING:
             if current_time - processing_start >= PROCESSING_DELAY :
+                move_tiles()
                 move = None
                 game_state = AWAITING_INPUT
 
@@ -95,13 +101,28 @@ def play_game():
             player_x = (x[0] * tile_size) + ((x[0] + 1) * 10)
             player_y = (x[1] * tile_size) + ((x[1] + 1) * 10)
             pygame.draw.rect(screen, "red", (player_x, player_y, tile_size, tile_size))
-       
-
-        # Position 0, 0 is 10, 10
-        # position 1, 1 is 10 + cell_size
+            text = FONT.render(str(2), 1, FONT_COLOR)
+            screen.blit(
+                text,
+                (
+                    player_x + (tile_size / 2 - text.get_width() / 2),
+                    player_y + (tile_size / 2 - text.get_height() / 2),
+                ),
+            )
 
 
         # Move
+        def move_tiles():
+            for x in player_pos:
+                if move == UP:
+                    x[1] -= 1
+                if move == DOWN:
+                    x[1] += 1
+                if move == LEFT:
+                    x[0] -= 1
+                if move == RIGHT:
+                    x[0] += 1
+
 
         pygame.display.flip()
 
