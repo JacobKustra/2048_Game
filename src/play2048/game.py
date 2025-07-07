@@ -55,6 +55,7 @@ def play_game():
                 tiles[temp_tile] = [2]
                 break
         
+
     def draw_tiles():
         for tile in tiles:
             coords_string = list(tile)
@@ -73,6 +74,43 @@ def play_game():
                     tile_y + (tile_size / 2 - text.get_height() / 2),
                 ),
             )
+
+
+    def combine(tiles):
+        if tile in tiles:
+            print("yes")
+
+    def move_tiles(tiles):
+        new_tiles = {}
+        for tile in tiles:
+            coords_string = list(tile)
+            coords = []
+            for num in coords_string:
+                coords.append(int(num))
+            if move == UP:
+                if coords[1] == 0:
+                    pass
+                else:
+                    coords[1] -= 1
+            if move == DOWN:
+                if coords[1] == 3:
+                    pass
+                else:
+                    coords[1] += 1
+            if move == LEFT:
+                if coords[0] == 0:
+                    pass
+                else:
+                    coords[0] -= 1
+            if move == RIGHT:
+                if coords[0] == 3:
+                    pass
+                else:
+                    coords[0] += 1
+            new_tile = f"{coords[0]}{coords[1]}"
+            new_tiles[new_tile] = [2]
+        return new_tiles
+
 
     while running:
 
@@ -97,10 +135,9 @@ def play_game():
 
         if game_state == PROCESSING:
             if current_time - processing_start >= PROCESSING_DELAY :
-                # move_tiles()
+                new_tiles = move_tiles(tiles)
+                tiles = new_tiles.copy()
                 place_tiles(tiles)
-                print(tiles)
-                print()
                 move = None
                 game_state = AWAITING_INPUT
 
@@ -136,20 +173,6 @@ def play_game():
         pygame.draw.rect(screen, "black", ((screen_width - 10), 0, 10, screen_height))
         
         draw_tiles()
-
-
-        # Move now defunct due to new tile storage type
-        # def move_tiles():
-        #     for x in player_pos:
-        #         if move == UP:
-        #             x[1] -= 1
-        #         if move == DOWN:
-        #             x[1] += 1
-        #         if move == LEFT:
-        #             x[0] -= 1
-        #         if move == RIGHT:
-        #             x[0] += 1
-
 
         pygame.display.flip()
 
