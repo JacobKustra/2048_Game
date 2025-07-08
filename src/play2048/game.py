@@ -39,6 +39,10 @@ def play_game():
     tiles = {
         "11": [2],
         "33": [2],
+        "00": [2],
+        "01": [2],
+        "12": [2],
+        "10": [2],
     }
 
     def place_tiles(tiles):
@@ -76,12 +80,48 @@ def play_game():
             )
 
 
-    def combine(tiles):
-        if tile in tiles:
-            print("yes")
+    def combine(tiles, tile_to_check):
+        if tile_to_check in tiles:
+            return True
 
     def move_tiles(tiles):
         new_tiles = {}
+        print(tiles)
+
+        # Sort by column up to down (1 to 16)
+        # Use for Up Move
+        tiles = dict(sorted(tiles.items()))
+        print(f"Column: Up to Down \n {tiles}")
+        print()
+
+        # Sort by column, down to Up (16 to 1)
+        # Use for Down Move
+        tiles = dict(sorted(tiles.items(), reverse=True))
+        print(f"Column Reverse: Down to Up \n {tiles}")
+        print()
+        
+        # Sort by row left to right
+        # Use for Left Move
+        tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0])))
+        print(f"Row: left to right \n {tiles}")
+        print()
+
+        # Sort by row, right to left starting at the bottom
+        # Use for Right Move
+        tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0]), reverse=True))
+        print(f"Row Reverse: Right to left \n {tiles}")
+        print()
+        
+        '''
+        move first,
+        then based on move sort tiles,
+        then iterate through sorted tiles (first to last),
+        while iterating through, check if move is allowed and for possible combinations
+        ** Need to find way of tracking each move/update as it happens and then
+        overwriting old dictionary as these changes cannot occur 
+        to the dictionary that is being iterated through **
+        '''
+
         for tile in tiles:
             coords_string = list(tile)
             coords = []
@@ -89,26 +129,32 @@ def play_game():
                 coords.append(int(num))
             if move == UP:
                 if coords[1] == 0:
-                    pass
+                    new_tile = f"{coords[0]}{coords[1]}"
                 else:
                     coords[1] -= 1
-            if move == DOWN:
+                new_tile = f"{coords[0]}{coords[1]}"
+                new_tiles[new_tile] = [2]
+            elif move == DOWN:
                 if coords[1] == 3:
                     pass
                 else:
                     coords[1] += 1
-            if move == LEFT:
+                new_tile = f"{coords[0]}{coords[1]}"
+                new_tiles[new_tile] = [2]
+            elif move == LEFT:
                 if coords[0] == 0:
                     pass
                 else:
                     coords[0] -= 1
-            if move == RIGHT:
+                new_tile = f"{coords[0]}{coords[1]}"
+                new_tiles[new_tile] = [2]
+            elif move == RIGHT:
                 if coords[0] == 3:
                     pass
                 else:
                     coords[0] += 1
-            new_tile = f"{coords[0]}{coords[1]}"
-            new_tiles[new_tile] = [2]
+                new_tile = f"{coords[0]}{coords[1]}"
+                new_tiles[new_tile] = [2]
         return new_tiles
 
 
@@ -137,7 +183,7 @@ def play_game():
             if current_time - processing_start >= PROCESSING_DELAY :
                 new_tiles = move_tiles(tiles)
                 tiles = new_tiles.copy()
-                place_tiles(tiles)
+                # place_tiles(tiles)
                 move = None
                 game_state = AWAITING_INPUT
 
