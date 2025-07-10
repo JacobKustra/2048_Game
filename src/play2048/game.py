@@ -80,12 +80,66 @@ def play_game():
             )
 
 
-    def combine(tiles, tile_to_check):
-        if tile_to_check in tiles:
-            return True
+    def calc_farthest_move(new_tiles, tile_to_check, move):
+        if len(new_tiles) == 0:
+            pass
+            # no need to do check of other tiles, just if move is valid
 
-    def calc_farthest_move(tiles, tile_to_check, move):
-        pass
+    def valid_move(tile, move, new_tiles):
+        coords_string = list(tile)
+        coords = []
+        final_coords = []
+        tile_data = tiles[tile]
+        for num in coords_string:
+            coords.append(int(num))
+        if move == UP:
+            if coords[1] == 0:
+                new_tile = f"{coords[0]}{coords[1]}"
+                new_tiles[new_tile] = tile_data
+                # Should this return the final tile?
+
+            elif coords[1] >= 1:
+                # at least one possible move up
+
+                # Set up loop to loop through y value times, capturing
+                # the highest y it can do?
+                coords[1] -= 1
+                new_tile = f"{coords[0]}{coords[1]}"
+
+                # if tile above it, can combine?
+                if new_tile in new_tiles:
+                    for i in new_tiles:
+                        # Can combine?
+                        if i == new_tile:
+                            if new_tiles[i][1] == 0:
+                                # Combine
+                                new_num = new_tiles[i][0] + new_tiles[new_tile][0]
+                                new_tiles[i] = [new_num, 1]
+                                print(new_tiles[i])
+                                # Don't add new tile, just edit existing
+                            else:
+                                coords[1] += 1
+                                new_tile = f"{coords[0]}{coords[1]}"
+                                new_tiles[new_tile] = tile_data
+                                # Finish this tile here
+                        pass
+                else:
+                    # move valid, return one move up
+                    coords[1] += 1
+                    new_tile = f"{coords[0]}{coords[1]}"
+                    new_tiles[new_tile] = tile_data
+                    # Finish this tile here
+
+                if coords[1] >= 2:
+                    # two possible moves up
+                    pass
+                    if coords[1] == 3:
+                        # three possible moves up
+                        pass
+
+        # add other moves
+        return new_tiles
+
     
 
     def move_tiles(tiles):
@@ -112,6 +166,31 @@ def play_game():
                 tile_data = tiles[tile]
                 for num in coords_string:
                     coords.append(int(num))
+                # Up Limit
+                if coords[1] == 0:
+                    new_tile = f"{coords[0]}{coords[1]}"
+                else:
+                    # check if one move up is valid, if yes, then try to 
+                    # see if two moves above is valid, etc in order 
+                    # to find max move possible
+                    coords[1] -= 1
+                    new_tile = f"{coords[0]}{coords[1]}"
+                    # check here to see if this exsists already
+                    if new_tile in new_tiles:
+                        # Check if tiles can combine, if not reset it
+
+                        valid_move(tile, move, new_tiles)
+                        print(new_tiles)
+                        pass
+
+                        # if valid_move():
+                        #     pass
+                        # else:
+                        #     coords[1] += 1
+                        #     new_tile = f"{coords[0]}{coords[1]}"
+                        
+                new_tiles[new_tile] = tile_data
+
 
 
         elif move == DOWN:
@@ -191,7 +270,7 @@ def play_game():
             if current_time - processing_start >= PROCESSING_DELAY :
                 new_tiles = move_tiles(tiles)
                 tiles = new_tiles.copy()
-                place_tiles(tiles)
+                # place_tiles(tiles)
                 move = None
                 game_state = AWAITING_INPUT
 
