@@ -35,14 +35,14 @@ def play_game():
     FONT_COLOR = (252, 86, 3)
     FONT = pygame.font.SysFont("comicsans", 60, bold=True)
 
-    # "x,y": value
+    # "x,y": [value, has combined this round?]
     tiles = {
-        "11": [2],
-        "33": [2],
-        "00": [2],
-        "01": [2],
-        "12": [2],
-        "10": [2],
+        "11": [2, 0],
+        "33": [2, 0],
+        "00": [2, 0],
+        "01": [2, 0],
+        "12": [16, 0],
+        "10": [2, 0],
     }
 
     def place_tiles(tiles):
@@ -70,7 +70,7 @@ def play_game():
             tile_x = (coords[0] * tile_size) + ((coords[0] + 1) * 10)
             tile_y = (coords[1] * tile_size) + ((coords[1] + 1) * 10)
             pygame.draw.rect(screen, "red", (tile_x, tile_y, tile_size, tile_size))
-            text = FONT.render(str(2), 1, FONT_COLOR)
+            text = FONT.render(str(tiles[tile][0]), 1, FONT_COLOR)
             screen.blit(
                 text,
                 (
@@ -84,78 +84,86 @@ def play_game():
         if tile_to_check in tiles:
             return True
 
+    def calc_farthest_move(tiles, tile_to_check, move):
+        pass
+    
+
     def move_tiles(tiles):
-        new_tiles = {}
-        print(tiles)
 
-        # Sort by column up to down (1 to 16)
-        # Use for Up Move
-        tiles = dict(sorted(tiles.items()))
-        print(f"Column: Up to Down \n {tiles}")
-        print()
-
-        # Sort by column, down to Up (16 to 1)
-        # Use for Down Move
-        tiles = dict(sorted(tiles.items(), reverse=True))
-        print(f"Column Reverse: Down to Up \n {tiles}")
-        print()
-        
-        # Sort by row left to right
-        # Use for Left Move
-        tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0])))
-        print(f"Row: left to right \n {tiles}")
-        print()
-
-        # Sort by row, right to left starting at the bottom
-        # Use for Right Move
-        tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0]), reverse=True))
-        print(f"Row Reverse: Right to left \n {tiles}")
-        print()
-        
         '''
         move first,
         then based on move sort tiles,
         then iterate through sorted tiles (first to last),
-        while iterating through, check if move is allowed and for possible combinations
-        ** Need to find way of tracking each move/update as it happens and then
-        overwriting old dictionary as these changes cannot occur 
-        to the dictionary that is being iterated through **
+        while iterating through, check if move is allowed and for possible 
+        combinations
+        ** moves need to occur to their maximum direction, ie as far as they
+        can move in the selected direction **
         '''
 
-        for tile in tiles:
-            coords_string = list(tile)
-            coords = []
-            for num in coords_string:
-                coords.append(int(num))
-            if move == UP:
-                if coords[1] == 0:
-                    new_tile = f"{coords[0]}{coords[1]}"
-                else:
-                    coords[1] -= 1
-                new_tile = f"{coords[0]}{coords[1]}"
-                new_tiles[new_tile] = [2]
-            elif move == DOWN:
-                if coords[1] == 3:
-                    pass
-                else:
-                    coords[1] += 1
-                new_tile = f"{coords[0]}{coords[1]}"
-                new_tiles[new_tile] = [2]
-            elif move == LEFT:
-                if coords[0] == 0:
-                    pass
-                else:
-                    coords[0] -= 1
-                new_tile = f"{coords[0]}{coords[1]}"
-                new_tiles[new_tile] = [2]
-            elif move == RIGHT:
-                if coords[0] == 3:
-                    pass
-                else:
-                    coords[0] += 1
-                new_tile = f"{coords[0]}{coords[1]}"
-                new_tiles[new_tile] = [2]
+        new_tiles = {}
+
+        if move == UP:
+            # Sort by column up to down (1 to 16)
+            # Use for Up Move
+            tiles = dict(sorted(tiles.items()))
+            for tile in tiles:
+                coords_string = list(tile)
+                coords = []
+                tile_data = tiles[tile]
+                for num in coords_string:
+                    coords.append(int(num))
+
+
+        elif move == DOWN:
+            # Sort by column, down to Up (16 to 1)
+            # Use for Down Move
+            tiles = dict(sorted(tiles.items(), reverse=True))
+        elif move == LEFT:
+            # Sort by row left to right
+            # Use for Left Move
+            tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0])))
+        elif move == RIGHT:
+            # Sort by row, right to left starting at the bottom
+            # Use for Right Move
+            tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0]), reverse=True))
+
         return new_tiles
+
+        #for tile in tiles:
+        #    coords_string = list(tile)
+        #    coords = []
+        #    tile_data = tiles[tile]
+        #    for num in coords_string:
+        #        coords.append(int(num))
+        #    if move == UP:
+        #        if coords[1] == 0:
+        #            new_tile = f"{coords[0]}{coords[1]}"
+        #        else:
+        #            coords[1] -= 1
+        #        new_tile = f"{coords[0]}{coords[1]}"
+        #        new_tiles[new_tile] = tile_data
+        #    elif move == DOWN:
+        #        if coords[1] == 3:
+        #            pass
+        #        else:
+        #            coords[1] += 1
+        #        new_tile = f"{coords[0]}{coords[1]}"
+        #        new_tiles[new_tile] = tile_data
+        #    elif move == LEFT:
+        #        if coords[0] == 0:
+        #            pass
+        #        else:
+        #            coords[0] -= 1
+        #        new_tile = f"{coords[0]}{coords[1]}"
+        #        new_tiles[new_tile] = tile_data
+        #    elif move == RIGHT:
+        #        if coords[0] == 3:
+        #            pass
+        #        else:
+        #            coords[0] += 1
+        #        new_tile = f"{coords[0]}{coords[1]}"
+        #        new_tiles[new_tile] = tile_data
+        #return new_tiles
 
 
     while running:
@@ -183,7 +191,7 @@ def play_game():
             if current_time - processing_start >= PROCESSING_DELAY :
                 new_tiles = move_tiles(tiles)
                 tiles = new_tiles.copy()
-                # place_tiles(tiles)
+                place_tiles(tiles)
                 move = None
                 game_state = AWAITING_INPUT
 
