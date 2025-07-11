@@ -490,8 +490,11 @@ def play_game():
 
     def reset_merges(tiles):
         # Resets merges each tiles values to go from 1 to 0
-        print("reset")
-        pass
+        for tile in tiles:
+            tile_val = tiles[tile][1]
+            if tiles[tile][1] == 1:
+                tiles[tile][1] = 0
+
 
 
 
