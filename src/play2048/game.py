@@ -32,6 +32,7 @@ def play_game():
     tile_size = ((screen_width - 50) / grid)
 
     running = True
+    game_started = 0
 
     FONT = pygame.font.SysFont("Arial", 60, bold=True)
     FONT_COLOR_WHITE = (228, 235, 240)
@@ -56,13 +57,16 @@ def play_game():
     
     # "x,y": [value, has combined this round?]
     tiles = {
-        "11": [2, 0],
-        "33": [2, 0],
-        "00": [2, 0],
-        "01": [4096, 0],
-        "12": [16, 0],
-        "10": [2, 0],
     }
+
+
+    def game_start(game_started):
+        if game_started == 0:
+            place_tiles(tiles)
+            place_tiles(tiles)
+            game_started += 1
+            return game_started
+
 
     def place_tiles(tiles):
         x = None
@@ -539,6 +543,11 @@ def play_game():
     while running:
 
         current_time = pygame.time.get_ticks()
+
+        if game_started == 0:
+            place_tiles(tiles)
+            place_tiles(tiles)
+            game_started = 1
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
