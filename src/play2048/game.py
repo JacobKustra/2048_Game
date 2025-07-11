@@ -32,9 +32,12 @@ def play_game():
 
     running = True
 
-
-    FONT_COLOR = (252, 86, 3)
-    FONT = pygame.font.SysFont("comicsans", 60, bold=True)
+    FONT_COLOR_WHITE = (228, 235, 240)
+    FONT_COLOR = (117, 100, 82)
+    FONT = pygame.font.SysFont("Arial", 60, bold=True)
+    BEIGE = (239, 229, 218)
+    BACKGROUND = (189, 172, 152)
+    GRID = (156, 138, 122)
     
     # "x,y": [value, has combined this round?]
     tiles = {
@@ -70,7 +73,7 @@ def play_game():
 
             tile_x = (coords[0] * tile_size) + ((coords[0] + 1) * 10)
             tile_y = (coords[1] * tile_size) + ((coords[1] + 1) * 10)
-            pygame.draw.rect(screen, "red", (tile_x, tile_y, tile_size, tile_size))
+            pygame.draw.rect(screen, BEIGE, (tile_x, tile_y, tile_size, tile_size))
             text = FONT.render(str(tiles[tile][0]), 1, FONT_COLOR)
             screen.blit(
                 text,
@@ -535,29 +538,29 @@ def play_game():
                 temp_y = j * cell_size
                 if (i % 2) == 0:
                     if (j % 2) == 0:
-                        pygame.draw.rect(screen, "white", (temp_x, temp_y, cell_size, cell_size))
+                        pygame.draw.rect(screen, BACKGROUND, (temp_x, temp_y, cell_size, cell_size))
                     else:
-                        pygame.draw.rect(screen, "gray", (temp_x, temp_y, cell_size, cell_size))
+                        pygame.draw.rect(screen, BACKGROUND, (temp_x, temp_y, cell_size, cell_size))
                 else:
                     if (j % 2) == 0:
-                        pygame.draw.rect(screen, "gray", (temp_x, temp_y, cell_size, cell_size))
+                        pygame.draw.rect(screen, BACKGROUND, (temp_x, temp_y, cell_size, cell_size))
                     else:
-                        pygame.draw.rect(screen, "white", (temp_x, temp_y, cell_size, cell_size))
+                        pygame.draw.rect(screen, BACKGROUND, (temp_x, temp_y, cell_size, cell_size))
 
 
         # Horizontal Bars
-        pygame.draw.rect(screen, "black", (0, 0, screen_width, 10))
-        pygame.draw.rect(screen, "black", (0, (tile_size + 10), screen_width, 10))
-        pygame.draw.rect(screen, "black", (0, (2 * (tile_size + 10)), screen_width, 10))
-        pygame.draw.rect(screen, "black", (0, (3 * (tile_size + 10)), screen_width, 10))
-        pygame.draw.rect(screen, "black", (0, (screen_height - 10), screen_width, 10))
+        pygame.draw.rect(screen, GRID, (0, 0, screen_width, 10))
+        pygame.draw.rect(screen, GRID, (0, (tile_size + 10), screen_width, 10))
+        pygame.draw.rect(screen, GRID, (0, (2 * (tile_size + 10)), screen_width, 10))
+        pygame.draw.rect(screen, GRID, (0, (3 * (tile_size + 10)), screen_width, 10))
+        pygame.draw.rect(screen, GRID, (0, (screen_height - 10), screen_width, 10))
 
         # Vertical Bars
-        pygame.draw.rect(screen, "black", (0, 0, 10, screen_height))
-        pygame.draw.rect(screen, "black", ((tile_size + 10), 0, 10, screen_height))
-        pygame.draw.rect(screen, "black", ((2 * (tile_size + 10)), 0, 10, screen_height))
-        pygame.draw.rect(screen, "black", ((3 * (tile_size + 10)), 0, 10, screen_height))
-        pygame.draw.rect(screen, "black", ((screen_width - 10), 0, 10, screen_height))
+        pygame.draw.rect(screen, GRID, (0, 0, 10, screen_height))
+        pygame.draw.rect(screen, GRID, ((tile_size + 10), 0, 10, screen_height))
+        pygame.draw.rect(screen, GRID, ((2 * (tile_size + 10)), 0, 10, screen_height))
+        pygame.draw.rect(screen, GRID, ((3 * (tile_size + 10)), 0, 10, screen_height))
+        pygame.draw.rect(screen, GRID, ((screen_width - 10), 0, 10, screen_height))
         
         draw_tiles()
 
