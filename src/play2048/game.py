@@ -81,12 +81,15 @@ def play_game():
             )
 
 
+
+
     def valid_move(tiles, move):
         final_tiles = {}
         final_tiles_set = {}
 
         if move == UP:
-
+            # Sort by column up to down (1 to 16)
+            # Use for Up Move
             tiles = dict(sorted(tiles.items()))
             for tile in tiles:
                 coords_string = list(tile)
@@ -117,7 +120,9 @@ def play_game():
                         for i in list(final_tiles):
                             # Can combine?
                             if i == new_tile:
-                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == final_tiles[new_tile][0]):
+                                
+                                # Issue here with combination
+                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
                                     # Combine
                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                     final_tiles[i] = [new_num, 1]
@@ -139,7 +144,7 @@ def play_game():
                                 for i in list(final_tiles):
                                     # Can combine?
                                     if i == new_tile:
-                                        if final_tiles[i][1] == 0 and (final_tiles[i][0] == final_tiles[new_tile][0]):
+                                        if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
                                             # Combine
                                             new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                             final_tiles[i] = [new_num, 1]
@@ -161,7 +166,7 @@ def play_game():
                                         for i in list(final_tiles):
                                             # Can combine?
                                             if i == new_tile:
-                                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == final_tiles[new_tile][0]):
+                                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
                                                     # Combine
                                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                                     final_tiles[i] = [new_num, 1]
@@ -179,91 +184,316 @@ def play_game():
                             # One tile move
                             final_tiles[new_tile] = tile_data
             final_tiles_set = final_tiles_set | final_tiles 
-            print(final_tiles_set)
-        # add other moves
-        return final_tiles_set
-
-
-
-
-    """
-    def move_tiles(tiles):
-
-        '''
-        move first,
-        then based on move sort tiles,
-        then iterate through sorted tiles (first to last),
-        while iterating through, check if move is allowed and for possible 
-        combinations
-        ** moves need to occur to their maximum direction, ie as far as they
-        can move in the selected direction **
-        '''
-
-        new_tiles = {}
-
-        if move == UP:
-            # Sort by column up to down (1 to 16)
-            # Use for Up Move
-            tiles = dict(sorted(tiles.items()))
-            for tile in tiles:
-                test = valid_move(tile, move)
-                new_tiles = test.copy()
-                print(new_tiles)
-
-
-        #if move == UP:
-        #    # Sort by column up to down (1 to 16)
-        #    # Use for Up Move
-        #    tiles = dict(sorted(tiles.items()))
-        #    for tile in tiles:
-        #        coords_string = list(tile)
-        #        coords = []
-        #        tile_data = tiles[tile]
-        #        for num in coords_string:
-        #            coords.append(int(num))
-        #        # Up Limit
-        #        if coords[1] == 0:
-        #            new_tile = f"{coords[0]}{coords[1]}"
-        #        else:
-        #            # check if one move up is valid, if yes, then try to 
-        #            # see if two moves above is valid, etc in order 
-        #            # to find max move possible
-        #            coords[1] -= 1
-        #            new_tile = f"{coords[0]}{coords[1]}"
-        #            # check here to see if this exsists already
-        #            if new_tile in new_tiles:
-        #                # Check if tiles can combine, if not reset it
-
-        #                valid_move(tile, move, new_tiles)
-        #                print(new_tiles)
-        #                pass
-
-        #                # if valid_move():
-        #                #     pass
-        #                # else:
-        #                #     coords[1] += 1
-        #                #     new_tile = f"{coords[0]}{coords[1]}"
-        #                
-        #        new_tiles[new_tile] = tile_data
-
 
 
         elif move == DOWN:
             # Sort by column, down to Up (16 to 1)
             # Use for Down Move
             tiles = dict(sorted(tiles.items(), reverse=True))
-        elif move == LEFT:
+
+            for tile in tiles:
+                coords_string = list(tile)
+                
+                coords = []
+                final_coords = []
+                # Add the final coords in
+
+                tile_data = tiles[tile]
+                for num in coords_string:
+                    coords.append(int(num))
+                    final_coords.append(int(num))
+
+                if coords[1] == 3:
+                    new_tile = f"{coords[0]}{coords[1]}"
+                    final_tiles[new_tile] = tile_data
+
+                # at least one possible move down
+                elif coords[1] <= 2:
+
+                    # Set up loop to loop through y value times, capturing
+                    # the highest y it can do?
+                    final_coords[1] += 1
+                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                    # if tile above it, can combine?
+                    if new_tile in final_tiles:
+                        for i in list(final_tiles):
+                            # Can combine?
+                            if i == new_tile:
+                                
+                                # Issue here with combination
+                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                    # Combine
+                                    new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                    final_tiles[i] = [new_num, 1]
+                                    # Don't add new tile, just edit existing
+                                else:
+                                    final_coords[1] -= 1
+                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                    final_tiles[new_tile] = tile_data
+                                    # Finish this tile here
+                    # no tile above it
+                    else:
+                        if coords[1] <= 1:
+                            # two possible moves down
+                            final_coords[1] += 1
+                            new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                            # if tile above it, can combine?
+                            if new_tile in final_tiles:
+                                for i in list(final_tiles):
+                                    # Can combine?
+                                    if i == new_tile:
+                                        if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                            # Combine
+                                            new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                            final_tiles[i] = [new_num, 1]
+                                            # Don't add new tile, just edit existing
+                                        else:
+                                            final_coords[1] -= 1
+                                            new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                            final_tiles[new_tile] = tile_data
+                                            # Finish this tile here
+                            else:
+
+                                if coords[1] == 0:
+                                    # three possible moves down
+                                    final_coords[1] += 1
+                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                                    # if tile above it, can combine?
+                                    if new_tile in final_tiles:
+                                        for i in list(final_tiles):
+                                            # Can combine?
+                                            if i == new_tile:
+                                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                                    # Combine
+                                                    new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                                    final_tiles[i] = [new_num, 1]
+                                                    # Don't add new tile, just edit existing
+                                                else:
+                                                    final_coords[1] -= 1
+                                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                                    final_tiles[new_tile] = tile_data
+                                                    # Finish this tile here
+                                    else:
+                                        final_tiles[new_tile] = tile_data
+                                else:
+                                    final_tiles[new_tile] = tile_data
+                        else:
+                            # One tile move
+                            final_tiles[new_tile] = tile_data
+            final_tiles_set = final_tiles_set | final_tiles 
+
+
+        if move == LEFT:
             # Sort by row left to right
             # Use for Left Move
             tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0])))
+
+            for tile in tiles:
+                coords_string = list(tile)
+                
+                coords = []
+                final_coords = []
+                # Add the final coords in
+
+                tile_data = tiles[tile]
+                for num in coords_string:
+                    coords.append(int(num))
+                    final_coords.append(int(num))
+
+                if coords[0] == 0:
+                    new_tile = f"{coords[0]}{coords[1]}"
+                    final_tiles[new_tile] = tile_data
+
+                # at least one possible move left
+                elif coords[0] >= 1:
+
+                    # Set up loop to loop through y value times, capturing
+                    # the highest y it can do?
+                    final_coords[0] -= 1
+                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                    # if tile above it, can combine?
+                    if new_tile in final_tiles:
+                        for i in list(final_tiles):
+                            # Can combine?
+                            if i == new_tile:
+                                
+                                # Issue here with combination
+                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                    # Combine
+                                    new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                    final_tiles[i] = [new_num, 1]
+                                    # Don't add new tile, just edit existing
+                                else:
+                                    final_coords[0] += 1
+                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                    final_tiles[new_tile] = tile_data
+                                    # Finish this tile here
+                    # no tile above it
+                    else:
+                        if coords[0] >= 2:
+                            # two possible moves left
+                            final_coords[0] -= 1
+                            new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                            # if tile above it, can combine?
+                            if new_tile in final_tiles:
+                                for i in list(final_tiles):
+                                    # Can combine?
+                                    if i == new_tile:
+                                        if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                            # Combine
+                                            new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                            final_tiles[i] = [new_num, 1]
+                                            # Don't add new tile, just edit existing
+                                        else:
+                                            final_coords[0] += 1
+                                            new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                            final_tiles[new_tile] = tile_data
+                                            # Finish this tile here
+                            else:
+
+                                if coords[0] == 3:
+                                    # three possible moves left
+                                    final_coords[0] -= 1
+                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                                    # if tile above it, can combine?
+                                    if new_tile in final_tiles:
+                                        for i in list(final_tiles):
+                                            # Can combine?
+                                            if i == new_tile:
+                                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                                    # Combine
+                                                    new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                                    final_tiles[i] = [new_num, 1]
+                                                    # Don't add new tile, just edit existing
+                                                else:
+                                                    final_coords[0] += 1
+                                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                                    final_tiles[new_tile] = tile_data
+                                                    # Finish this tile here
+                                    else:
+                                        final_tiles[new_tile] = tile_data
+                                else:
+                                    final_tiles[new_tile] = tile_data
+                        else:
+                            # One tile move
+                            final_tiles[new_tile] = tile_data
+            final_tiles_set = final_tiles_set | final_tiles 
+
+
         elif move == RIGHT:
             # Sort by row, right to left starting at the bottom
             # Use for Right Move
             tiles = dict(sorted(tiles.items(), key=lambda x: (x[0][1], x[0][0]), reverse=True))
 
-        return new_tiles
+            for tile in tiles:
+                coords_string = list(tile)
+                
+                coords = []
+                final_coords = []
+                # Add the final coords in
 
-    """
+                tile_data = tiles[tile]
+                for num in coords_string:
+                    coords.append(int(num))
+                    final_coords.append(int(num))
+
+                if coords[0] == 3:
+                    new_tile = f"{coords[0]}{coords[1]}"
+                    final_tiles[new_tile] = tile_data
+
+                # at least one possible move right
+                elif coords[0] <= 2:
+
+                    # Set up loop to loop through y value times, capturing
+                    # the highest y it can do?
+                    final_coords[0] += 1
+                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                    # if tile above it, can combine?
+                    if new_tile in final_tiles:
+                        for i in list(final_tiles):
+                            # Can combine?
+                            if i == new_tile:
+                                
+                                # Issue here with combination
+                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                    # Combine
+                                    new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                    final_tiles[i] = [new_num, 1]
+                                    # Don't add new tile, just edit existing
+                                else:
+                                    final_coords[0] -= 1
+                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                    final_tiles[new_tile] = tile_data
+                                    # Finish this tile here
+                    # no tile above it
+                    else:
+                        if coords[0] <= 1:
+                            # two possible moves right
+                            final_coords[0] += 1
+                            new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                            # if tile above it, can combine?
+                            if new_tile in final_tiles:
+                                for i in list(final_tiles):
+                                    # Can combine?
+                                    if i == new_tile:
+                                        if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                            # Combine
+                                            new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                            final_tiles[i] = [new_num, 1]
+                                            # Don't add new tile, just edit existing
+                                        else:
+                                            final_coords[0] -= 1
+                                            new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                            final_tiles[new_tile] = tile_data
+                                            # Finish this tile here
+                            else:
+
+                                if coords[0] == 0:
+                                    # three possible moves right
+                                    final_coords[0] += 1
+                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+
+                                    # if tile above it, can combine?
+                                    if new_tile in final_tiles:
+                                        for i in list(final_tiles):
+                                            # Can combine?
+                                            if i == new_tile:
+                                                if final_tiles[i][1] == 0 and (final_tiles[i][0] == tile_data[0]):
+                                                    # Combine
+                                                    new_num = final_tiles[i][0] + final_tiles[new_tile][0]
+                                                    final_tiles[i] = [new_num, 1]
+                                                    # Don't add new tile, just edit existing
+                                                else:
+                                                    final_coords[0] -= 1
+                                                    new_tile = f"{final_coords[0]}{final_coords[1]}"
+                                                    final_tiles[new_tile] = tile_data
+                                                    # Finish this tile here
+                                    else:
+                                        final_tiles[new_tile] = tile_data
+                                else:
+                                    final_tiles[new_tile] = tile_data
+                        else:
+                            # One tile move
+                            final_tiles[new_tile] = tile_data
+            final_tiles_set = final_tiles_set | final_tiles 
+
+        return final_tiles_set
+
+
+    def reset_merges(tiles):
+        # Resets merges each tiles values to go from 1 to 0
+        print("reset")
+        pass
+
+
 
     while running:
 
@@ -289,6 +519,7 @@ def play_game():
         if game_state == PROCESSING:
             if current_time - processing_start >= PROCESSING_DELAY :
                 new_tiles = valid_move(tiles, move)
+                reset_merges(new_tiles)
                 tiles = copy.deepcopy(new_tiles)
                 place_tiles(tiles)
                 move = None
