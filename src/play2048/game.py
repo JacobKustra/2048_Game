@@ -11,6 +11,7 @@ def play_game():
     screen_width = 750
     screen_height = 750
     screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption('2048 Game by Jacob Kustra')
 
     # Game States
     AWAITING_INPUT = "awaiting_input"
@@ -32,19 +33,33 @@ def play_game():
 
     running = True
 
+    FONT = pygame.font.SysFont("Arial", 60, bold=True)
     FONT_COLOR_WHITE = (228, 235, 240)
     FONT_COLOR = (117, 100, 82)
-    FONT = pygame.font.SysFont("Arial", 60, bold=True)
     BEIGE = (239, 229, 218)
     BACKGROUND = (189, 172, 152)
     GRID = (156, 138, 122)
+
+    TILE_COLORS = {
+        2: (239, 229, 218),
+        4: (235, 216, 182),
+        8: (243, 178, 120), # White text starts at 8
+        16: (247, 148, 99), 
+        32: (247, 129, 101),
+        64: (247, 101, 68),
+        128: (240, 211, 110),
+        256: (242, 211, 98),
+        512: (246, 212, 94),
+        1024: (248, 213, 78),
+        2048: (250, 211, 60),
+    }
     
     # "x,y": [value, has combined this round?]
     tiles = {
         "11": [2, 0],
         "33": [2, 0],
         "00": [2, 0],
-        "01": [2, 0],
+        "01": [4096, 0],
         "12": [16, 0],
         "10": [2, 0],
     }
@@ -62,10 +77,30 @@ def play_game():
             elif temp_tile not in tiles:
                 tiles[temp_tile] = [2, 0]
                 break
+
+
+    def tile_color(tile):
+        tile_num = tiles[tile][0]
+        black_color = (26, 25, 24)
+        if tile_num >= 4096:
+            return black_color
+        else:
+            return TILE_COLORS[tiles[tile][0]]
+
+
+    def tile_text_color(tile):
+        tile_num = tiles[tile][0]
+        if tile_num < 8:
+            return FONT_COLOR
+        else:
+            return FONT_COLOR_WHITE
+
         
 
     def draw_tiles():
         for tile in tiles:
+            color = tile_color(tile)
+            text_color = tile_text_color(tile)
             coords_string = list(tile)
             coords = []
             for num in coords_string:
@@ -73,8 +108,8 @@ def play_game():
 
             tile_x = (coords[0] * tile_size) + ((coords[0] + 1) * 10)
             tile_y = (coords[1] * tile_size) + ((coords[1] + 1) * 10)
-            pygame.draw.rect(screen, BEIGE, (tile_x, tile_y, tile_size, tile_size))
-            text = FONT.render(str(tiles[tile][0]), 1, FONT_COLOR)
+            pygame.draw.rect(screen, color, (tile_x, tile_y, tile_size, tile_size))
+            text = FONT.render(str(tiles[tile][0]), 1, text_color)
             screen.blit(
                 text,
                 (
