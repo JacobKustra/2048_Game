@@ -2,6 +2,7 @@ import pygame
 import random
 import copy
 
+valid_move_count = 0
 
 def play_game():
     pygame.init()
@@ -33,6 +34,7 @@ def play_game():
 
     running = True
     game_started = 0
+
 
     FONT = pygame.font.SysFont("Arial", 60, bold=True)
     FONT_COLOR_WHITE = (228, 235, 240)
@@ -99,7 +101,6 @@ def play_game():
         else:
             return FONT_COLOR_WHITE
 
-        
 
     def draw_tiles():
         for tile in tiles:
@@ -123,9 +124,9 @@ def play_game():
             )
 
 
-
-
     def valid_move(tiles, move):
+
+        global valid_move_count
         final_tiles = {}
         final_tiles_set = {}
 
@@ -168,6 +169,8 @@ def play_game():
                                     # Combine
                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                     final_tiles[i] = [new_num, 1]
+                                    
+                                    valid_move_count += 1
                                     # Don't add new tile, just edit existing
                                 else:
                                     final_coords[1] += 1
@@ -190,11 +193,14 @@ def play_game():
                                             # Combine
                                             new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                             final_tiles[i] = [new_num, 1]
+                                    
+                                            valid_move_count += 1
                                             # Don't add new tile, just edit existing
                                         else:
                                             final_coords[1] += 1
                                             new_tile = f"{final_coords[0]}{final_coords[1]}"
                                             final_tiles[new_tile] = tile_data
+                                            valid_move_count += 1
                                             # Finish this tile here
                             else:
 
@@ -212,19 +218,26 @@ def play_game():
                                                     # Combine
                                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                                     final_tiles[i] = [new_num, 1]
+                                    
+                                                    valid_move_count += 1
                                                     # Don't add new tile, just edit existing
                                                 else:
                                                     final_coords[1] += 1
                                                     new_tile = f"{final_coords[0]}{final_coords[1]}"
                                                     final_tiles[new_tile] = tile_data
+                                                    valid_move_count += 1
                                                     # Finish this tile here
                                     else:
                                         final_tiles[new_tile] = tile_data
+                                        valid_move_count += 1
                                 else:
                                     final_tiles[new_tile] = tile_data
+                                    valid_move_count += 1
                         else:
                             # One tile move
                             final_tiles[new_tile] = tile_data
+                            valid_move_count += 1
+                                    
             final_tiles_set = final_tiles_set | final_tiles 
 
 
@@ -268,6 +281,7 @@ def play_game():
                                     # Combine
                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                     final_tiles[i] = [new_num, 1]
+                                    valid_move_count += 1
                                     # Don't add new tile, just edit existing
                                 else:
                                     final_coords[1] -= 1
@@ -290,11 +304,13 @@ def play_game():
                                             # Combine
                                             new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                             final_tiles[i] = [new_num, 1]
+                                            valid_move_count += 1
                                             # Don't add new tile, just edit existing
                                         else:
                                             final_coords[1] -= 1
                                             new_tile = f"{final_coords[0]}{final_coords[1]}"
                                             final_tiles[new_tile] = tile_data
+                                            valid_move_count += 1
                                             # Finish this tile here
                             else:
 
@@ -312,19 +328,24 @@ def play_game():
                                                     # Combine
                                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                                     final_tiles[i] = [new_num, 1]
+                                                    valid_move_count += 1
                                                     # Don't add new tile, just edit existing
                                                 else:
                                                     final_coords[1] -= 1
                                                     new_tile = f"{final_coords[0]}{final_coords[1]}"
                                                     final_tiles[new_tile] = tile_data
+                                                    valid_move_count += 1
                                                     # Finish this tile here
                                     else:
                                         final_tiles[new_tile] = tile_data
+                                        valid_move_count += 1
                                 else:
                                     final_tiles[new_tile] = tile_data
+                                    valid_move_count += 1
                         else:
                             # One tile move
                             final_tiles[new_tile] = tile_data
+                            valid_move_count += 1
             final_tiles_set = final_tiles_set | final_tiles 
 
 
@@ -368,6 +389,7 @@ def play_game():
                                     # Combine
                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                     final_tiles[i] = [new_num, 1]
+                                    valid_move_count += 1
                                     # Don't add new tile, just edit existing
                                 else:
                                     final_coords[0] += 1
@@ -390,11 +412,13 @@ def play_game():
                                             # Combine
                                             new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                             final_tiles[i] = [new_num, 1]
+                                            valid_move_count += 1
                                             # Don't add new tile, just edit existing
                                         else:
                                             final_coords[0] += 1
                                             new_tile = f"{final_coords[0]}{final_coords[1]}"
                                             final_tiles[new_tile] = tile_data
+                                            valid_move_count += 1
                                             # Finish this tile here
                             else:
 
@@ -412,19 +436,24 @@ def play_game():
                                                     # Combine
                                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                                     final_tiles[i] = [new_num, 1]
+                                                    valid_move_count += 1
                                                     # Don't add new tile, just edit existing
                                                 else:
                                                     final_coords[0] += 1
                                                     new_tile = f"{final_coords[0]}{final_coords[1]}"
                                                     final_tiles[new_tile] = tile_data
+                                                    valid_move_count += 1
                                                     # Finish this tile here
                                     else:
                                         final_tiles[new_tile] = tile_data
+                                        valid_move_count += 1
                                 else:
                                     final_tiles[new_tile] = tile_data
+                                    valid_move_count += 1
                         else:
                             # One tile move
                             final_tiles[new_tile] = tile_data
+                            valid_move_count += 1
             final_tiles_set = final_tiles_set | final_tiles 
 
 
@@ -468,6 +497,7 @@ def play_game():
                                     # Combine
                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                     final_tiles[i] = [new_num, 1]
+                                    valid_move_count += 1
                                     # Don't add new tile, just edit existing
                                 else:
                                     final_coords[0] -= 1
@@ -490,11 +520,13 @@ def play_game():
                                             # Combine
                                             new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                             final_tiles[i] = [new_num, 1]
+                                            valid_move_count += 1
                                             # Don't add new tile, just edit existing
                                         else:
                                             final_coords[0] -= 1
                                             new_tile = f"{final_coords[0]}{final_coords[1]}"
                                             final_tiles[new_tile] = tile_data
+                                            valid_move_count += 1
                                             # Finish this tile here
                             else:
 
@@ -512,21 +544,25 @@ def play_game():
                                                     # Combine
                                                     new_num = final_tiles[i][0] + final_tiles[new_tile][0]
                                                     final_tiles[i] = [new_num, 1]
+                                                    valid_move_count += 1
                                                     # Don't add new tile, just edit existing
                                                 else:
                                                     final_coords[0] -= 1
                                                     new_tile = f"{final_coords[0]}{final_coords[1]}"
                                                     final_tiles[new_tile] = tile_data
+                                                    valid_move_count += 1
                                                     # Finish this tile here
                                     else:
                                         final_tiles[new_tile] = tile_data
+                                        valid_move_count += 1
                                 else:
                                     final_tiles[new_tile] = tile_data
+                                    valid_move_count += 1
                         else:
                             # One tile move
                             final_tiles[new_tile] = tile_data
+                            valid_move_count += 1
             final_tiles_set = final_tiles_set | final_tiles 
-
         return final_tiles_set
 
 
@@ -538,9 +574,9 @@ def play_game():
                 tiles[tile][1] = 0
 
 
-
-
     while running:
+
+        global valid_move_count
 
         current_time = pygame.time.get_ticks()
 
@@ -564,17 +600,19 @@ def play_game():
                     move = key_to_move[event.key]
                     processing_start = current_time
                     game_state = PROCESSING
-                    
 
         if game_state == PROCESSING:
             if current_time - processing_start >= PROCESSING_DELAY :
                 new_tiles = valid_move(tiles, move)
                 reset_merges(new_tiles)
                 tiles = copy.deepcopy(new_tiles)
-                place_tiles(tiles)
+
+                if valid_move_count != 0:
+                    place_tiles(tiles)
+                    valid_move_count = 0
+
                 move = None
                 game_state = AWAITING_INPUT
-
 
         for i in range(grid):
             temp_x = i * cell_size
@@ -590,7 +628,6 @@ def play_game():
                         pygame.draw.rect(screen, BACKGROUND, (temp_x, temp_y, cell_size, cell_size))
                     else:
                         pygame.draw.rect(screen, BACKGROUND, (temp_x, temp_y, cell_size, cell_size))
-
 
         # Horizontal Bars
         pygame.draw.rect(screen, GRID, (0, 0, screen_width, 10))
